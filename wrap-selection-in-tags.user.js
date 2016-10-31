@@ -14,22 +14,25 @@
 
     setTimeout(function() {
 
-      // Global variables
-      var selectedContentHtml,
-          selectedContentText,
-          selectedContentAncestorNode,
-          selectedContentAncestorNodeText,
-          selectboxValue,
-          lang;
+      // TinyMCE
+      var tinyMCE, tinymceId, tinymceEscapedId, editorTable, insertLocation, langSelectBox, newMenu;
+
+      // Selected content and HTML
+      var selectedContentHtml, selectedContentText, selectedContentAncestorNode, selectedContentAncestorNodeText, selectboxValue, lang;
 
       // Get Editor instance by ID
       // Editor ID varies so get ID first
-      // Assumes only 1 textarea element in DOM
-      var tinymceId = document.getElementsByTagName("textarea")[0].id;
-      var tinyMCE = unsafeWindow.tinyMCE.getInstanceById(tinymceId);
+      // Gets first textarea element in DOM
+      tinymceId = document.getElementsByTagName("textarea")[0].id;
+
+      if (tinymceId.includes(".")) {
+        tinymceEscapedId = tinymceId.replace(/\./gi, "\\\."); // Replace "." with "\." (escaped)
+      }
+
+      tinyMCE = unsafeWindow.tinyMCE.getInstanceById(tinymceId);
 
       // Create td node with dropdown select list
-      var newMenu = document.createElement("td");
+      newMenu = document.createElement("td");
       newMenu.style.position = "relative";
       newMenu.innerHTML = `<select style="width: 120px; max-width: 120px !important;" id="langSelectBox" class="mceNativeListBox" tabindex="-1">
       <option value="">Language Tag</option>
@@ -39,18 +42,18 @@
       </select>`;
 
       // Insert node in Editor's toolbar
-      var editorTable = document.querySelector(`#${tinymceId}_toolbar2 tr`);
-      var insertLocation = editorTable.children.length-1;
+      editorTable = document.querySelector(`#${tinymceEscapedId}_toolbar2 tr`);
+      insertLocation = editorTable.children.length-1;
       editorTable.insertBefore(newMenu, editorTable.children[insertLocation]);
 
       // Event listener on select box
-      var langSelectBox = document.getElementById("langSelectBox");
+      langSelectBox = document.getElementById("langSelectBox");
       langSelectBox.addEventListener("change", function() {
         setContent();
         selectLanguage();
 
         if (!tinyMCE.selection.isCollapsed()) {
-          if (selectedContentText == selectedContentAncestorNodeText && selectedContentAncestorNode.nodeName != "TD") {
+          if (selectedContentText == selectedContentAncestorNodeText) {
             addLangAttribute();
           }
           else if (selectedContentText != selectedContentAncestorNodeText) {
