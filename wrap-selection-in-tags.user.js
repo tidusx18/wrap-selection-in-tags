@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Wrap Selection in Tags
-// @version      0.0.1
+// @version      0.0.2
 // @description  Adds HTML language attribute to selected content in TinyMCE editor.
 // @author       Daniel Victoriano
 // @match        https://fiu.blackboard.com/*
