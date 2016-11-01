@@ -24,11 +24,6 @@
       // Editor ID varies so get ID first
       // Gets first textarea element in DOM
       tinymceId = document.getElementsByTagName("textarea")[0].id;
-
-      if (tinymceId.includes(".")) {
-        tinymceEscapedId = tinymceId.replace(/\./gi, "\\\."); // Replace "." with "\." (escaped)
-      }
-
       tinyMCE = unsafeWindow.tinyMCE.getInstanceById(tinymceId);
 
       // Create td node with dropdown select list
@@ -41,8 +36,16 @@
       <option value="Italian">Italian</option>
       </select>`;
 
+      // Escape any dots in editor's ID
+      if (tinymceId.includes(".")) {
+        tinymceEscapedId = tinymceId.replace(/\./gi, "\\.");
+        editorTable = document.querySelector(`#${tinymceEscapedId}_toolbar2 tr`);
+      }
+      else {
+        editorTable = document.querySelector(`#${tinymceId}_toolbar2 tr`);
+      }
+
       // Insert node in Editor's toolbar
-      editorTable = document.querySelector(`#${tinymceEscapedId}_toolbar2 tr`);
       insertLocation = editorTable.children.length-1;
       editorTable.insertBefore(newMenu, editorTable.children[insertLocation]);
 
